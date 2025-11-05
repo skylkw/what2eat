@@ -1,13 +1,15 @@
-from fastapi import FastAPI, Response, Depends
-from core.config import Settings, get_settings
+from fastapi import FastAPI, Response
+from core.config import settings
+from core.exception import register_exception_handlers
+from lifespan import lifespan
+from dishes.router import router as dishes_router
 
+app = FastAPI(app_name=settings.app_name, version=settings.version, lifespan=lifespan)
+register_exception_handlers(app)
 
-app = FastAPI()
-
-
-@app.get("/")
-def read_root(settings: Settings = Depends(get_settings)):
-    return {"message": "Hello, World!", "app_name": settings.app_name}
+app.include_router(
+    router=dishes_router,
+)
 
 
 @app.get("/health")

@@ -9,9 +9,10 @@ class Settings(BaseSettings):
     """应用配置"""
 
     app_name: str = "What to Eat"
+    version: str = "1.0.0"
     debug: bool = False
     # 数据库类型
-    db_type: Literal["sqlite", "mysql", "postgresql"] = "sqlite"
+    db_type: Literal["sqlite", "mysql", "postgres"] = "sqlite"
 
     # PostgreSQL 配置
     pg_host: str = "localhost"
@@ -47,7 +48,7 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         """根据配置生成数据库连接 URL"""
-        if self.db_type == "postgresql":
+        if self.db_type == "postgres":
             return (
                 f"postgresql+asyncpg://{self.pg_user}:{self.pg_password}"
                 f"@{self.pg_host}:{self.pg_port}/{self.pg_name}"
@@ -67,7 +68,7 @@ class Settings(BaseSettings):
     def engine_options(self) -> dict:
         """根据连接池配置生成引擎选项字典"""
         options = {}
-        if self.db_type in {"postgresql", "mysql"}:
+        if self.db_type in {"postgres", "mysql"}:
             options = {
                 "pool_size": self.pool_size,
                 "max_overflow": self.max_overflow,
@@ -98,3 +99,4 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+print("Loaded settings:", settings)

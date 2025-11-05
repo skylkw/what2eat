@@ -1,8 +1,10 @@
 from typing import AsyncGenerator
+
 from loguru import logger
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from core.config import settings
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
 from core.base_model import Base
+from core.config import settings
 
 
 # 创建数据库引擎和会话工厂
@@ -16,7 +18,6 @@ SessionFactory = async_sessionmaker(
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with SessionFactory() as session:
         yield session
-
 
 
 # 用于临时测试的数据库初始化函数

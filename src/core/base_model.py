@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import MetaData, func, DateTime
+from sqlalchemy import DateTime, MetaData, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from core.config import settings
 
+from core.config import settings
 
 database_naming_convention = {
     "ix": "%(column_0_label)s_idx",
@@ -23,9 +23,10 @@ class Base(DeclarativeBase):
 class DateTimeMixin:
     """包含创建和更新时间戳的混入类"""
 
-    if settings.db_type in {"postgresql", "mysql"}:
+    if settings.db_type in {"postgres", "mysql"}:
         created_at: Mapped[datetime] = mapped_column(
             DateTime(timezone=True),
+            default=func.now(),
             server_default=func.now(),
             nullable=False,
             index=True,
@@ -33,6 +34,7 @@ class DateTimeMixin:
         )
         updated_at: Mapped[datetime] = mapped_column(
             DateTime(timezone=True),
+            default=func.now(),
             server_default=func.now(),
             onupdate=func.now(),
             nullable=False,
